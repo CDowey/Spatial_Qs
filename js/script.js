@@ -43,46 +43,50 @@ document
     setBasemap(basemap);
   });
 
+const downtown_url = 'https://anrmaps.vermont.gov/arcgis/rest/services/map_services/ACCD_smartgrowth/MapServer/9'
+
 let downtowns = L.esri.featureLayer({
-  url: 'https://anrmaps.vermont.gov/arcgis/rest/services/map_services/ACCD_smartgrowth/MapServer/9'
+  url: downtown_url
 }).addTo(map);
 
 var downtownDistrict = document.getElementById('district');
 
-downtownDistrict.addEventListener('change', function () {
-  downtowns.setWhere(downtownDistrict.value);
+downtowns.bindPopup( layer =>
+  layer.feature.properties.CommunityName + " Downtown Area"
+)
+var query = L.esri.query({
+  url: downtown_url
 });
 
-// query the layer above to get all CommunityNames and populate the dropdown?
-require(["esri/request"], function(esriRequest) {
-  // Define the 'options' for the request
-  var options = {
-    query: {
-      where: '1=1',
-      outFields: 'CommunityName',
-      returnGeometry: 'false',
-      returnTrueCurves: 'false',
-      returnIdsOnly: 'false',
-      returnCountOnly: 'false',
-      returnZ: 'false',
-      returnM: 'false',
-      returnDistinctValues: 'false',
-      returnExtentsOnly: 'false',
-      f: 'pjson'
-    },
-    responseType: "json"
-  };
+downtownDistrict.addEventListener('change', function () {
+//  downtowns.setWhere(downtownDistrict.value);
+  console.log(downtownDistrict.value)
+  const query_response = query.where(downtownDistrict.value).bounds(function (error, latLngBounds, response) {
+  if (error) {
+    console.log(error);
+    return;
+  }
+  map.fitBounds(latLngBounds);
+});
+  console.log(query_response)
+});
 
 
+// query downtowns at lat long of click
+map.on('click', function(e) {error, int, response
+  const int = query.intersects(
+    if (error) {
+    console.log(error);
+    return;
+  }
+  console.log();)
+  console.log(int)
 
-
-
-  function request() {
-    var url = 'https://anrmaps.vermont.gov/arcgis/rest/services/map_services/ACCD_smartgrowth/MapServer/9';
-    esriRequest(url, options).then(function(response) {
-      console.log("response", response);
-      var responseJSON = JSON.stringify(response, null, 2);
-      console.log(responseJSON)
-    });
-  };
-})
+  query.run(function(error, featureCollection, response) {
+    if (error) {
+      console.log(error);
+      return;
+    }
+    console.log('Found ' + featureCollection.features.length + ' features');
+  });
+});
