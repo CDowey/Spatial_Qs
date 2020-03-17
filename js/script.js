@@ -44,7 +44,7 @@ document
   });
 
 let downtowns = L.esri.featureLayer({
-  url: 'http://anrmaps.vermont.gov/arcgis/rest/services/map_services/ACCD_smartgrowth/MapServer/9'
+  url: 'https://anrmaps.vermont.gov/arcgis/rest/services/map_services/ACCD_smartgrowth/MapServer/9'
 }).addTo(map);
 
 var downtownDistrict = document.getElementById('district');
@@ -78,7 +78,7 @@ require(["esri/request"], function(esriRequest) {
 
 
   function request() {
-    var url = 'http://anrmaps.vermont.gov/arcgis/rest/services/map_services/ACCD_smartgrowth/MapServer/9';
+    var url = 'https://anrmaps.vermont.gov/arcgis/rest/services/map_services/ACCD_smartgrowth/MapServer/9';
     esriRequest(url, options).then(function(response) {
       console.log("response", response);
       var responseJSON = JSON.stringify(response, null, 2);
